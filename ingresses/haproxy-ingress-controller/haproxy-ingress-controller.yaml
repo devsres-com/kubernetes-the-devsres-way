@@ -1,0 +1,269 @@
+---
+# Source: haproxy-ingress/templates/controller-poddisruptionbudget.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: haproxy-ingress
+      app.kubernetes.io/instance: hic
+  minAvailable: 1
+---
+# Source: haproxy-ingress/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+  namespace: ingress-haproxy
+---
+# Source: haproxy-ingress/templates/controller-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+  namespace: ingress-haproxy
+data:
+  healthz-port: "10253"
+  stats-port: "1936"
+---
+# Source: haproxy-ingress/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io
+    resources:
+      - ingresses
+      - ingressclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+---
+# Source: haproxy-ingress/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hic-haproxy-ingress
+subjects:
+  - kind: ServiceAccount
+    name: hic-haproxy-ingress
+    namespace: ingress-haproxy
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: hic-haproxy-ingress
+---
+# Source: haproxy-ingress/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+  namespace: ingress-haproxy
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - secrets
+      - namespaces
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+    verbs:
+      - get
+      - create
+      - update
+---
+# Source: haproxy-ingress/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+  namespace: ingress-haproxy
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hic-haproxy-ingress
+subjects:
+  - kind: ServiceAccount
+    name: hic-haproxy-ingress
+    namespace: ingress-haproxy
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: hic-haproxy-ingress
+---
+# Source: haproxy-ingress/templates/controller-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: hic
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+  namespace: ingress-haproxy
+spec:
+  replicas: 1
+  revisionHistoryLimit: 
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  minReadySeconds: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: haproxy-ingress
+      app.kubernetes.io/instance: hic
+  template:
+    metadata:
+      annotations:
+      labels:
+        app.kubernetes.io/name: haproxy-ingress
+        app.kubernetes.io/instance: hic
+    spec:
+      serviceAccountName: hic-haproxy-ingress
+      containers:
+        - name: haproxy-ingress
+          image:  "quay.io/jcmoraisjr/haproxy-ingress:v0.12.2"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - --configmap=haproxy-ingres-controller/hic-haproxy-ingress
+            - --ingress-class=haproxy
+            - --sort-backends
+          ports:        
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+            - name: healthz
+              containerPort: 10253      
+          livenessProbe:
+            httpGet:
+              path: "/healthz"
+              port: 10253
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: "/healthz"
+              port: 10253
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          resources:
+            {}
+      terminationGracePeriodSeconds: 60
+      dnsPolicy: ClusterFirst
+      hostNetwork: false

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    helm.sh/chart: haproxy-ingress-0.12.2
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "v0.12.2"
+    app.kubernetes.io/managed-by: Helm
+  name: hic-haproxy-ingress
+  namespace: ingress-haproxy
+spec:
+  externalTrafficPolicy: "Local"
+  ports:
+    - name: "http-80"
+      port: 80
+      protocol: TCP
+      targetPort: http
+    - name: "https-443"
+      port: 443
+      protocol: TCP
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: haproxy-ingress
+    app.kubernetes.io/instance: RELEASE-NAME
+  type: "LoadBalancer"
