@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  namespace: default 
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: hello.devsres.com
+    http:
+      paths:
+      - path: /v1
+        backend:
+          serviceName: web
+          servicePort: 8080
+      - path: /v2
+        backend:
+          serviceName: web2
+          servicePort: 8080
