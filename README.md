@@ -30,6 +30,12 @@ eksctl create nodegroup --cluster=devsres-lab --managed --spot --instance-types=
 
 O eksctl irá configurar o kubectl local automaticamente.
 
+Enjoou? Não esquece de deletar o cluster!
+
+```
+eksctl delete cluster  --name devsres-ingress-lab
+```
+
 ## E agora?
 
 Não fiz muita coisa.
