@@ -187,7 +187,30 @@ Muitos softwares não foram desenvolvidos para escalar horizontalmente ou lidar 
 
 A grande dificuldade que uma empresa pode ter frente ao uso do Kubernetes é decidir se seu uso é vantajoso ou não. E, infelizmente, sem o apoio de especialistas, é bastante difícil prever certas dificuldades adicionais que podem inviabilizar o uso antes de uma implantação.
 
+# "Bibliografia"
 
+## Historia
+
+* https://en.wikipedia.org/wiki/Cgroups
+* https://en.wikipedia.org/wiki/Namespace
+* https://www.section.io/engineering-education/history-of-container-technology/
+* https://d2iq.com/blog/brief-history-containers
+* https://docs.openshift.com/enterprise/3.0/whats_new/carts_vs_images.html
+
+
+
+## Documentação do Kubernetes
+
+* https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase
+* https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+* https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+* https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+
+
+## Projetos 
+
+* https://github.com/google/lmctfy: versão opensource da stack de containers do Google, posteriormente teve os esforços direcionados para a libcontainer.
+* https://github.com/opencontainers/runc/tree/master/libcontainer: projeto original 
 
 
 
