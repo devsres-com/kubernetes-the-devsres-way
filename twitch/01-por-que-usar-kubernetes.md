@@ -4,7 +4,7 @@ O maior desafio para implantar Kubernetes não é a gigantesca quantidade de "pa
 
 Levando em consideração minha tendência natural de ter dificuldade de concisão, precisamos de um pouco de história da infra-estrutura para entender os problemas a contêinerização e o Kubernetes (que são duas coisas bem diferentes) vieram resolver.
 
-# História da automação
+# História da infraestrutura
 
 ## Pré-história - Instalações de máquinas físicas
 
@@ -28,6 +28,21 @@ Os Devs desenvolviam suas aplicações e entregavam, entre os "artefatos", docum
 
 Essa é a época de ouro do "na minha máquina funciona!".
 
+### Infraestrutura
+
+As principais necessidades de uma boa arquitetura de aplicação não vão mudar muito com o tempo; com poucos equipamentos físicos, a **tolerância a falhas** acaba desempenhando um papel importante, com equipamentos com múltiplas fontes para redundância, uso extensivo de RAID, RAM com ECC e etc., não apenas em termos de hosts mas para todos os ativos de rede e storages.
+
+Mas os principais aspectos de uma boa arquitetura sempre levam em consideração três eixos principais:
+
+* Alta disponibilidade;
+* Escalabilidade;
+* Monitoração;
+
+Além disso, dois requisitos particularmente inconvenientes também devem ser levados em consideração:
+
+* Segurança;
+* Eficiência na operação.
+
 ## História recente - Virtualização
 
 ### Ops
@@ -35,8 +50,6 @@ Essa é a época de ouro do "na minha máquina funciona!".
 O uso de hardware dedicado para execução de sistemas e aplicações normalmente gera desperdício computacional. Com o objetivo de consolidar recursos e melhorar o TCO, as tecnologias de virtualização (re)apareceram na história da computação, com diversas ofertas de softwares livres, gratuitos ou pagos para viabilizar essa missão.
 
 Agora, os hardwares (cada vez maiores) agora podiam contar com diversas máquinas virtuais, variando de umas poucas a dezenas ou centenas, dependendo da qualidade do equipamento a que você tem acesso.
-
-A tecnologia de virtualização trouxe também ideias como "live migration" para implementar tolerância a falhas em caso de perda de hosts - as máquinas virtuais poderiam "subir" nos demais hosts do cluster. 
 
 Com a substituição das máquinas físicas por virtuais, observamos uma "explosão" em termos de hosts. Isso significa que, agora, em vez de um punhado de máquinas com nomes bonitos, temos dezenas (ou mesmo centenas) de máquinas virtuais, cada uma precisando de um conjunto de configuração, controle de atualizações, patches de segurança e tudo mais que você conseguir imaginar como trabalho de Ops.
 
@@ -49,6 +62,12 @@ Para adotar o modelo de virtualização, começou-se a cobrar maior maturidade p
 Os processos de deployment começaram a melhorar; a ideia de "integração contínua" surgiu, evoluindo para o "continuous delivery" e posteriormente o tão sonhado "continuous deployment". O tal do "Manifesto Ágil" começa a ser mais acessível e viável para uma gama maior de pessoas.
 
 As principais tecnologias de pipelines e CI/CD começaram a surgir e o processo de desenvolvimentou passou a se reformular a partir daí, culminando no que temos hoje que chamamos de "Devops", tanto a cultura quanto o cargo. 
+
+### Infraestrutura
+
+A tecnologia de virtualização não tornou desnecessárias as ideias implementadas visando tolerância a falhas, mas trouxe auxílios como as operações de "live migration" e facilidades de recuperar VMs em caso de falhas do Hypervisor hospedeiro. A perda de um equipamento já não é tão crítica quanto no passado.
+
+Combinado a isso, as tecnologias de automação começaram a sugerir que, em vez de recuperar uma máquina que falhou, pode ser uma ideia melhor simplesmente fazer o redeploy de uma nova configurada para a mesma finalidade. Combinar esta ideia com a possibilidade de descartar máquinas ociosas ataca o problema de **escalabilidade**, embora não exista uma maneira padronizada para implementar este recurso - muitas vezes há a dependência de tecnologias proprietárias caras que atendam a este problema.
 
 ## História moderna - Conteinerização
 
@@ -125,7 +144,9 @@ Apenas te oferecem uma unidade básica de lançamento de software excepcionalmen
 
 A definição oficial do (https://kubernetes.io/)[seu próprio site] descreve o Kubernetes como um sistema código aberto para automatizar o deploy, o scale e a gerência de contêineres de aplicações.
 
-A minha definição pessoal do Kubernetes é a de que ele atua como um **framework para a infraestrutura**; um conjunto de softwares que você instala em uma máquina que viabilizará a implementação de soluções para os diversos problemas que os contêineres, por si só, náo resolvem. 
+A minha definição pessoal do Kubernetes descreve o software como um **framework de infraestrutura** declarativo para contêineres operado de maneira autônoma por controladores ("controllers"). 
+
+A ideia é resolver muitos dos principais problemas de infraestrutura usando contêineres como unidade de operação.
 
 ## Orquestração
 
@@ -196,8 +217,6 @@ A grande dificuldade que uma empresa pode ter frente ao uso do Kubernetes é dec
 * https://www.section.io/engineering-education/history-of-container-technology/
 * https://d2iq.com/blog/brief-history-containers
 * https://docs.openshift.com/enterprise/3.0/whats_new/carts_vs_images.html
-
-
 
 ## Documentação do Kubernetes
 
